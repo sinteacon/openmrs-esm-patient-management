@@ -4,6 +4,7 @@ import { SkeletonIcon, SkeletonText } from '@carbon/react';
 import { ExtensionSlot, useConfig, interpolateString, ConfigurableLink, age } from '@openmrs/esm-framework';
 import { SearchedPatient } from '../types/index';
 import styles from './compact-patient-banner.scss';
+import { parseDate, EthiopicCalendar, toCalendar, CalendarDate } from '@internationalized/date';
 
 interface PatientSearchResultsProps {
   patients: Array<SearchedPatient>;
@@ -29,6 +30,23 @@ const PatientSearchResults = React.forwardRef<HTMLDivElement, PatientSearchResul
           return gender;
       }
     };
+    const gregToEth = (gregdate) => {
+      if (!gregdate) {
+        return null;
+      }
+      var newDate = new Date(gregdate);
+      if (true) {
+        const year = newDate.getFullYear();
+        const month = newDate.getMonth() + 1;
+        const date = newDate.getDate();
+        let gregorianDate = new CalendarDate(year, month, date);
+        let ethiopianDate = toCalendar(gregorianDate, new EthiopicCalendar());
+        let finalDate = ethiopianDate.month + '/' + ethiopianDate.day + '/' + ethiopianDate.year;
+        return finalDate;
+      } else {
+        return null;
+      }
+    };
 
     const fhirPatients = useMemo(() => {
       // TODO: If/When the online patient search is migrated to the FHIR API at some point, this could
@@ -46,7 +64,7 @@ const PatientSearchResults = React.forwardRef<HTMLDivElement, PatientSearchResul
             },
           ],
           gender: patient.person.gender,
-          birthDate: patient.person.birthdate,
+          birthDate: gregToEth(patient.person.birthdate),
           deceasedDateTime: patient.person.deathDate,
           deceasedBoolean: patient.person.death,
           identifier: patient.identifiers,
