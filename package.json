@@ -19,7 +19,6 @@
     "extract-translations": "lerna run extract-translations -- --config ../../tools/i18next-parser.config.js"
   },
   "dependencies": {
-    "@adobe/react-spectrum": "^3.22.0",
     "swr": "^1.0.1"
   },
   "devDependencies": {
